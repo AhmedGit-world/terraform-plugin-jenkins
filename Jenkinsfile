@@ -60,13 +60,10 @@ pipeline {
                 }
             }
         }
-
-        stage('Manual Approval for Apply') {
-            // This stage pauses the pipeline and waits for manual approval.
-            steps {
-                input message: 'Proceed with Terraform Apply?'
-            }
-        }
+        
+        // --- Manual Approval Stage REMOVED ---
+        // The 'Manual Approval for Apply' stage has been removed as per your request.
+        // Terraform Apply will now run automatically after Plan.
 
         stage('Terraform Apply') {
             steps {
@@ -74,10 +71,12 @@ pipeline {
                     def terraformDir = "terraform" // Adjust this
                     if (fileExists(terraformDir)) {
                         dir(terraformDir) {
-                            sh 'terraform apply -auto-approve=false tfplan' // Use -auto-approve=false for safety
+                            // Using -auto-approve to bypass confirmation.
+                            // Be cautious with this in production environments!
+                            sh 'terraform apply -auto-approve tfplan' 
                         }
                     } else {
-                        sh 'terraform apply -auto-approve=false tfplan'
+                        sh 'terraform apply -auto-approve tfplan'
                     }
                 }
             }
